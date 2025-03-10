@@ -1080,11 +1080,12 @@ class OpenXRProgram(object):
                 }
                 # print data with all floats rounded to 2 decimal places
                 print(
-                    f"{time.time():0.2f} {hand=} pos=({data['position']['x']:0.2f}, {data['position']['y']:0.2f}, {data['position']['z']:0.2f})"
-                    + f" quat=({data['orientation']['w']:0.2f}, {data['orientation']['x']:0.2f}, {data['orientation']['y']:0.2f}, {data['orientation']['z']:0.2f})"
-                    + f" vel=({data['velocity']['x']:0.2f}, {data['velocity']['y']:0.2f}, {data['velocity']['z']:0.2f})"
-                    + f" ang_vel=({data['angular_velocity']['x']:0.2f}, {data['angular_velocity']['y']:0.2f}, {data['angular_velocity']['z']:0.2f})"
-                    + f" trigger={data['trigger']:0.2f}"
+                    f"{time.time():0.2f} {hand=}"
+                    + f" pos=({data['position']['x']: 4.2f}, {data['position']['y']: 4.2f}, {data['position']['z']: 4.2f})"
+                    + f" quat=({data['orientation']['w']: 4.2f}, {data['orientation']['x']: 4.2f}, {data['orientation']['y']: 4.2f}, {data['orientation']['z']: 4.2f})"
+                    + f" vel=({data['velocity']['x']: 4.2f}, {data['velocity']['y']: 4.2f}, {data['velocity']['z']: 4.2f})"
+                    + f" ang_vel=({data['angular_velocity']['x']: 4.2f}, {data['angular_velocity']['y']: 4.2f}, {data['angular_velocity']['z']: 4.2f})"
+                    + f" trigger={data['trigger']: 4.2f}"
                 )
 
                 byte_data = msgpack.packb(data)
