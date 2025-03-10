@@ -435,6 +435,7 @@ class OpenXRProgram(object):
                 subaction_paths=self.input.hand_subaction_path,
             ),
         )
+
         # Create output actions for vibrating the left and right controller.
         self.input.vibrate_action = xr.create_action(
             action_set=self.input.action_set,
@@ -870,7 +871,7 @@ class OpenXRProgram(object):
                 self.grab_value[hand] = float(grab_value.current_state)
                 if grab_value.current_state > 0.9:
                     vibration = xr.HapticVibration(
-                        amplitude=0.5,
+                        amplitude=0.1,
                         duration=xr.MIN_HAPTIC_DURATION,
                         frequency=xr.FREQUENCY_UNSPECIFIED,
                     )
@@ -1038,7 +1039,7 @@ class OpenXRProgram(object):
         # Render a 10cm cube scaled by grabAction for each hand. Note renderHand will only be
         # true when the application has focus.
         for hand in Side:
-            space_location = xr.locate_space(
+            space_location, velocity = xr.locate_space_with_velocity(
                 space=self.input.hand_space[hand],
                 base_space=self.app_space,
                 time=predicted_display_time,
@@ -1065,12 +1066,25 @@ class OpenXRProgram(object):
                         "z": space_location.pose.orientation.z,
                         "w": space_location.pose.orientation.w,
                     },
+                    "velocity": {
+                        "x": velocity.linear_velocity.x,
+                        "y": velocity.linear_velocity.y,
+                        "z": velocity.linear_velocity.z,
+                    },
+                    "angular_velocity": {
+                        "x": velocity.angular_velocity.x,
+                        "y": velocity.angular_velocity.y,
+                        "z": velocity.angular_velocity.z,
+                    },
                     "trigger": self.grab_value[hand],
                 }
                 # print data with all floats rounded to 2 decimal places
                 print(
                     f"{time.time():0.2f} {hand=} pos=({data['position']['x']:0.2f}, {data['position']['y']:0.2f}, {data['position']['z']:0.2f})"
                     + f" quat=({data['orientation']['w']:0.2f}, {data['orientation']['x']:0.2f}, {data['orientation']['y']:0.2f}, {data['orientation']['z']:0.2f})"
+                    + f" vel=({data['velocity']['x']:0.2f}, {data['velocity']['y']:0.2f}, {data['velocity']['z']:0.2f})"
+                    + f" ang_vel=({data['angular_velocity']['x']:0.2f}, {data['angular_velocity']['y']:0.2f}, {data['angular_velocity']['z']:0.2f})"
+                    + f" trigger={data['trigger']:0.2f}"
                 )
 
                 byte_data = msgpack.packb(data)
